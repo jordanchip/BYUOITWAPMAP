@@ -5,26 +5,37 @@ seen_users = set()
 
 def process_line(line):
     words = line.split()
+
+    #The end bracket is where the date begins
     end_bracket = words[0].index('>')
     if end_bracket == -1:
         end_bracket = 5
+
+    #Get date in format MMM_DD_HH_mm__ss
     date = ' '.join((words[0][end_bracket+1:], words[1], words[2]))
+
+    #Get rid of nasty october logs
     if 'oct' in date.lower():
         return
+
+    #Get another date that we will use for our key as MM_DD_HH
     hour_date = '_'.join((words[0][end_bracket+1:], words[1], words[2][:2]))
     place = words[3]
     mac = words[8]
+
+    #Some buildings don't have the '-'
     try:
         bldg = place[0:place.index('-')]
     except ValueError:
         return
     key = '_'.join((hour_date, bldg))
     user_key = '_'.join((hour_date, mac))
+
+    #Don't let more than one user enter in a log per second
     if user_key in seen_users:
         return
     seen_users.add(user_key)
-    if key in seen_users:
-        return
+    
     if key in big_map:
         big_map[key] += 1
     else:

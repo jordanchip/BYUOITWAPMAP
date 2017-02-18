@@ -8,6 +8,8 @@ prev_user = ""
 minute_split = 60
 global bad_dates
 bad_dates = 0
+MINUTES_IN_WEEK = 60*24*7
+
 
 def add_lat_long():
     with open('buildingGPS.csv') as csvfile:
@@ -18,6 +20,8 @@ def add_lat_long():
                 big_map[bl] = [0 for x in xrange((MINUTES_IN_WEEK)/minute_split+2)]
             big_map[row['BLDG']][0] = row['lat']
             big_map[row['BLDG']][1] = row['lon']
+
+
 
 def is_association(line):
     return 'association response' in line
@@ -73,7 +77,6 @@ def process_line(line):
     if bldg not in big_map:
         #Create a list, with 2 spots for the lat/long, followed
         #by a column for each subsection of time division we have made
-        MINUTES_IN_WEEK = 60*24*7
         big_map[bldg] = [0 for x in xrange((MINUTES_IN_WEEK)/minute_split+2)]
 
     big_map[bldg][indx+2] += 1
@@ -134,19 +137,26 @@ for i in range(7, 8):
                 print "line_num:", line_num
             line_num += 1
             # print "ln:", line
-            if is_association(line)
+            if is_association(line):
                 process_line(line)
 
-# if csv_output:
-#     with open(''.join(('output', str(i), '.csv')), 'wb') as out:
-#         writer = csv.writer(out)
-#         csv_map = []
-#         writer.writerows(big_map)
+if csv_output:
+    with open(''.join(('output', str(i), '.csv')), 'wb') as out:
+        writer = csv.writer(out)
+        csv_map = []
+        writer.writerows(big_map)
 
-# else:
-#     #Output data looks like this: output1.txt
-#     with open(''.join(('output', '.txt')), 'w') as out:
-#         for key in sorted(big_map.iterkeys()):
-#             out.write(' '.join((str(key), ":", str(big_map[key]), '\n')))
+else:
+    #Output data looks like this: output1.txt
+    with open(''.join(('outputTMP', '.txt')), 'w') as out:
+        header_line = [str(datetime(year=2016,month=11,day=19)+timedelta(minutes=x*minute_split)) for x in xrange(0,MINUTES_IN_WEEK/minute_split)]
+        header_line.insert(0, 'LONG')
+        header_line.insert(0, 'LAT')
+        debugger()
+        out.write(' '.join(('BLDG', ':', str(header_line), '\n')))
+        for key in sorted(big_map.iterkeys()):
+            out.write(' '.join((str(key), ":", str(big_map[key]), '\n')))
+            out.write(' '.join((str(key), ":", str(big_map[key]), '\n')))
 
+add_lat_long()
 print "bad_dates:", bad_dates

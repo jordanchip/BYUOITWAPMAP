@@ -152,11 +152,11 @@ else:
         header_line = [str(datetime(year=2016,month=11,day=19)+timedelta(minutes=x*minute_split)) for x in xrange(0,MINUTES_IN_WEEK/minute_split)]
         header_line.insert(0, 'LONG')
         header_line.insert(0, 'LAT')
-        debugger()
+        add_lat_long()
+        # debugger()
         out.write(' '.join(('BLDG', ':', str(header_line), '\n')))
         for key in sorted(big_map.iterkeys()):
             out.write(' '.join((str(key), ":", str(big_map[key]), '\n')))
             out.write(' '.join((str(key), ":", str(big_map[key]), '\n')))
 
-add_lat_long()
 print "bad_dates:", bad_dates

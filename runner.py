@@ -9,7 +9,17 @@ minute_split = 60
 global bad_dates
 bad_dates = 0
 
-def is_association(line)
+def add_lat_long():
+    with open('buildingGPS.csv') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            bl = row['BLDG']
+            if bl not in big_map:
+                big_map[bl] = [0 for x in xrange((MINUTES_IN_WEEK)/minute_split+2)]
+            big_map[row['BLDG']][0] = row['lat']
+            big_map[row['BLDG']][1] = row['lon']
+
+def is_association(line):
     return 'association response' in line
 
 def process_line(line):
@@ -113,7 +123,7 @@ def process_line(line):
 
 csv_output = False
 
-for i in range(1, 8):
+for i in range(7, 8):
     print "FILE: {}".format(i)
     line_num = 0
     #Input files look like this: forjohndata1.txt

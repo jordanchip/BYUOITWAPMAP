@@ -9,6 +9,9 @@ minute_split = 60
 global bad_dates
 bad_dates = 0
 
+def is_association(line)
+    return 'association response' in line
+
 def process_line(line):
     global bad_dates
     global prev_user
@@ -121,8 +124,8 @@ for i in range(1, 8):
                 print "line_num:", line_num
             line_num += 1
             # print "ln:", line
-            
-            process_line(line)
+            if is_association(line)
+                process_line(line)
 
 # if csv_output:
 #     with open(''.join(('output', str(i), '.csv')), 'wb') as out:
